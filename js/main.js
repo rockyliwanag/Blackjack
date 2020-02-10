@@ -1,29 +1,61 @@
-//Blackjack Psuedocode
+/*----- constants -----*/
+const PLAYERS = {
+    '0' : {
+        name: 'Dealer',
+        cards: []
+    },
+    '1' : {
+        name: 'Player',
+        cards: []
+    },
+    dealCards: function() {
 
-//Constants needed
-//Winning hand = 21
-//Array Deck of cards A to K plus suits
+    }
+};
 
+const BUTTONS = {
+    'Deal' : {
+        name: 'Deal',
+        image: './Images/deal-button.png'
+    },
+    'Hit' : {
+        name: 'Hit',
+        image: './Images/hit-button.png'
+    },
+    'Stay' : {
+        name: 'Stay',
+        image: './Images/stay-button.png'
+    }
+};
 
-//Other Variables
-//Dealer hand
-//User hand
+/*----- app's state (variables) -----*/
+
 //player Total
 //Dealer Total
 //Shuffle Cards
 //player turn
 
-//cached elements
+/*----- cached element references -----*/
+
 //deck of cards
+class Card {
+    constructor(name, value, suit, image){
+        this.name = name;
+        this.value = value;
+        this.suit = suit;
+        this.image = image;
+    }
+}
+
 //player/computer sum
 
+/*----- event listeners -----*/
 
-//event listeners
 //Hit Button
 //Stay Button
 //Deal Button
 
-
+/*----- functions -----*/
 
 //-Game initializes, cards need to be shuffled randomnly
 //-Cards get dealt 2 cards to dealer/player/dealer/player
@@ -46,6 +78,18 @@
 //  less than 21, dealer wins
 //-if player and dealer is less than 21 and hold cards, 
 //  whoever is closest to 21 wins
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
