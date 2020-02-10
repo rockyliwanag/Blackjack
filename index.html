@@ -11,36 +11,41 @@
 
 <body>
     <main id="main-display">
-        <section>
-            <div id="dealer-cards">
+        <section id="top">
+            <h3 class="header-cards" id="header-div">DEALER CARDS</h3>
+            <div class="cards"id="dealer-cards">    
             </div>
         </section>
 
-        <section>
-            <div>
+        <section id="middle">
+            <div id="dealer-container">
                 <header class="names">
-                    <h1 id="dealer-title">DEALER</h1>
+                    <h1 id="dealer-title">D E A L E R</h1>
                 </header>
                 <div class="scores">
                     <h2 id="dealer-score">0</h1>
                 </div>
+            </div> 
+            <div id="player-container">
                 <header class="names">
-                    <h1 id="player-title">PLAYER</h1>
+                    <h1 id="player-title">P L A Y E R</h1>
                 </header>
                 <div class="scores">
                     <h2 id="player-score">0</h2>
                 </div>
             </div>
         </section>
-        <section>
-            <div id="player-cards">
+        <section id="bottom">
+            <div class="cards" id="player-cards">
             </div>
-            <div id="buttons">
-                <img src="/Images/deal-button.png" alt="red deal button">
-                <img src="/Images/hit-button.png" alt="green hit button">
-                <img src="/Images/stay-button.png" alt="blue stay button">
+            
+            <div id="button-container">
+                <img class="buttons"src="./Images/deal-button.png" alt="red deal button">
+                <img class="buttons" src="./Images/hit-button.png" alt="green hit button">
+                <img class="buttons" src="./Images/stay-button.png" alt="blue stay button">
             </div>
         </section>
+        <h3 class="header-cards" id="footer-div">PLAYER CARDS</h3>
     </main>
 
     
