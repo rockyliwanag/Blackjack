@@ -17,8 +17,8 @@ const PLAYERS = {
     }
 };
 
-let faces = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-let suits = ['Spades', 'Club', 'Heart', 'Diamond'];
+let faces = [ '02', '03', '04', '05', '06', '07', '08', '09', '010', 'J', 'Q', 'K', 'A'];
+let suits = ['s', 'c', 'd', 'h'];
 let masterDeck = getDeck();
 
 
@@ -39,7 +39,8 @@ const hit = document.getElementById('hit-button');
 const stay = document.getElementById('stay-button');
 const dlrScore = document.getElementById('dealer-score');
 const plyrScore = document.getElementById('player-score');
-
+const dlrContainer = document.getElementById('dealer-cards');
+const plyrContainer = document.getElementById('player-cards');
 
 
 /*----- event listeners -----*/
@@ -77,13 +78,6 @@ function shuffleDeck() {
     return tempDeck;
 }
 
-// function renderCardToContainer(deck, container) {
-//     container.innerHTML = '';
-//     let cardsHtml = deck.
-// }
-
-
-
 // function checkImage(faceImg, suitImg) {
 //     return ``;
 // }
@@ -97,12 +91,22 @@ function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
             dealerDeck.push(shuffledDeck.pop());
             playerDeck.push(shuffledDeck.pop());
             return;
-        } 
+        }
     };
     deal();
+    renderCardToContainers(dealerDeck, dlrContainer);
+    renderCardToContainers(playerDeck, plyrContainer);
     console.log(shuffledDeck);
     console.log (dealerDeck);
     console.log(playerDeck);
+}
+
+function renderCardToContainers(deck, container) {
+    container.innerHTML = '';
+    let cardsHtml = deck.reduce(function(html, card){
+        return html + `<div class="card ${card.face}"></div>`;
+    }, '');
+    container.innerHTML = cardsHtml;
 }
 
 function nextCard(){ //push card to player hand array
