@@ -1,4 +1,7 @@
 /*----- constants -----*/
+const ambience = new Audio('');
+const shuffleDeck = new Audio('');
+const giveCard = new Audio('');
 const PLAYERS = {
     '0' : {
         name: 'Dealer',
@@ -15,6 +18,10 @@ const PLAYERS = {
 
 /*----- app's state (variables) -----*/
 
+let dealerTotal;
+let playerTotal;
+let dealerDeck;
+let playerDeck;
 //player Total //reduce() to get total value
 //Dealer Total//reduce() to get total value
 //player turn
@@ -26,17 +33,7 @@ const stay = document.getElementById('stay-button');
 const dlrScore = document.getElementById('dealer-score');
 const plyrScore = document.getElementById('player-score');
 
-//deck of cards
-class Card {
-    constructor(){
-        this.deck = [];
-        const value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11];
-        const suits = [Heart, Diamond, Spade, Club];
 
-    }
-}
-
-//player/computer sum
 
 /*----- event listeners -----*/
 
@@ -44,24 +41,36 @@ deal.addEventListener('click', dealCards);
 hit.addEventListener('click', nextCard);
 stay.addEventListener('click', holdCards);
 
-//Hit Button
-//Stay Button
-//Deal Button
 
 /*----- functions -----*/
 
-function dealCards(){
+//deck of cards
+let face = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'K'];
+let suit = ['Spades', 'Club', 'Heart', 'Diamond'];
+
+class Card {
+    constructor(value1, value2, img ){
+        this.value1 = value1;
+        this.value2 = value2;
+        this.img = img;
+    }
+}
+let As = new Card('A', 1, 11, 'Spade', 'Images/Spades/spades-Audio.svg');
+
+function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
     console.log('deal cards!');
 
-};
+}
 
-function nextCard(){
+function nextCard(){ //push card to player hand array
     console.log('hit me!');
-};
+}
 
 function holdCards() {
     console.log('tap, tap');
-};
+}
+
+
 
 
 
@@ -85,18 +94,3 @@ function holdCards() {
     //  less than 21, dealer wins
     //-if player and dealer is less than 21 and hold cards, 
     //  whoever is closest to 21 wins
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
