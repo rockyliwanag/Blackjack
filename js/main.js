@@ -1,4 +1,5 @@
 /*----- constants -----*/
+
 const ambience = new Audio('');
 const shuffSound = new Audio('');
 const dealSound = new Audio('');
@@ -12,16 +13,11 @@ const PLAYERS = {
         name: 'Player',
         cards: []
     },
-    // dealCards: function() {
-
-    // }
 };
 
 let faces = [ '02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
 let suits = ['s', 'c', 'd', 'h'];
 let masterDeck = getDeck();
-
-
 
 /*----- app's state (variables) -----*/
 
@@ -30,11 +26,9 @@ let playerTotal;
 let shuffledDeck;
 let dealerDeck = PLAYERS[0].cards;
 let playerDeck = PLAYERS[1].cards;
-//player Total //reduce() to get total value
-//Dealer Total//reduce() to get total value
-//player turn
 
 /*----- cached element references -----*/
+
 const deal = document.getElementById('reset-button');
 const hit = document.getElementById('hit-button');
 const stay = document.getElementById('stay-button');
@@ -43,17 +37,13 @@ const plyrScore = document.getElementById('player-score');
 const dlrContainer = document.getElementById('dealer-cards');
 const plyrContainer = document.getElementById('player-cards');
 
-
 /*----- event listeners -----*/
 
 deal.addEventListener('click', dealCards);
 hit.addEventListener('click', nextCard);
 stay.addEventListener('click', holdCards);
 
-
 /*----- functions -----*/
-
-//deck of cards
 
 function getDeck(){
     let deck = [];
@@ -66,7 +56,6 @@ function getDeck(){
         });
     });
     return deck;
-    
 }
 
 function shuffleDeck() {
@@ -83,16 +72,18 @@ function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
     shuffleDeck();
     let deal = function() {
         if( PLAYERS[0].cards.length === 0){
-            dealerDeck.push(shuffledDeck.pop());
             playerDeck.push(shuffledDeck.pop());
             dealerDeck.push(shuffledDeck.pop());
             playerDeck.push(shuffledDeck.pop());
-            return;
+            // dealerDeck.push(renderBackCard()); //facedown card .card.back-red
+            // console.log(renderBackCard());
         }
     };
     deal();
     dNum();
     pNum();
+    renderTotal();
+    renderBackCard();
     renderCardToContainers(dealerDeck, dlrContainer);
     renderCardToContainers(playerDeck, plyrContainer);
 }
@@ -104,27 +95,42 @@ function renderCardToContainers(deck, container) {
     }, '');
     container.innerHTML = cardsHtml;
 }
-
-function dNum () {
+let temp
+function renderBackCard() {
+    let backCard = document.createElement('div');
+    backCard.setAttribute('class', 'card back-red');
+    dealerDeck.push(backCard);
+    return temp;
+}   
+    
+function dNum() {
     let dTotal = dealerDeck.reduce((acc, cur) => {
         acc += cur.value;
         return acc;
     }, 0);
-    console.log("dTOTAL ", dTotal);
     return dTotal;
 }
 
-function pNum () {
+function pNum() {
     let pTotal = playerDeck.reduce((acc, cur) => {
         acc += cur.value;
         return acc;
     }, 0);
-    console.log("pTOTAL", pTotal);
     return pTotal;
 }
 
+function renderTotal() {
+    dlrScore.innerText = dNum();
+    plyrScore.innerText = pNum();
+}
 
-function nextCard(){ //push card to player hand array
+//need function that takes dNum and pNum as arguments and see if it is a total of 21 - player with 21 wins.
+// function checkWinner (dNum, pNum) {
+//     if( PLAYERS[0].cards.);
+// }
+
+function nextCard() { //push card to player hand array
+    
     console.log('hit me!');
 }
 
@@ -132,14 +138,6 @@ function holdCards() {
     console.log('tap, tap');
 }
 
-
-
-
-
-//-Game initializes, cards need to be shuffled randomnly
-//-Cards get dealt 2 cards to dealer/player/dealer/player
-//-Get sum of player cards on hand
-//-Get sum of dealer cards on hand
 
 //Dealer move logic
     //-if sum of cards are less than 17 dealer hits
