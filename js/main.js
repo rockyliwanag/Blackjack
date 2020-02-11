@@ -1,7 +1,8 @@
 /*----- constants -----*/
 const ambience = new Audio('');
-const shuffleDeck = new Audio('');
-const giveCard = new Audio('');
+const shuffSound = new Audio('');
+const dealSound = new Audio('');
+
 const PLAYERS = {
     '0' : {
         name: 'Dealer',
@@ -16,10 +17,16 @@ const PLAYERS = {
     }
 };
 
+let faces = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+let suits = ['Spades', 'Club', 'Heart', 'Diamond'];
+let masterDeck = getDeck();
+
+
 /*----- app's state (variables) -----*/
 
 let dealerTotal;
 let playerTotal;
+let shuffledDeck;
 let dealerDeck;
 let playerDeck;
 //player Total //reduce() to get total value
@@ -45,19 +52,57 @@ stay.addEventListener('click', holdCards);
 /*----- functions -----*/
 
 //deck of cards
-let face = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'K'];
-let suit = ['Spades', 'Club', 'Heart', 'Diamond'];
 
-class Card {
-    constructor(value1, value2, img ){
-        this.value1 = value1;
-        this.value2 = value2;
-        this.img = img;
-    }
+
+// class Card {
+//     constructor(value1, value2, img ){
+//         this.value1 = value1;
+//         this.value2 = value2;
+//         this.img = img;
+//     }
+// }
+// let As = new Card('A', 1, 11, 'Spade', 'Images/Spades/spades-Audio.svg');
+
+
+function getDeck(){
+    let deck = [];
+    suits.forEach(function(suit) {
+        faces.forEach(function(face){
+            deck.push({
+                face: `${suit}${face}`,
+                value: Number(face) || (face === 'A' ? 11 : 10)
+            });
+        });
+    });
+    return deck;
+    
 }
-let As = new Card('A', 1, 11, 'Spade', 'Images/Spades/spades-Audio.svg');
+
+function shuffleDeck() {
+    let tempDeck = masterDeck.slice();
+    shuffledDeck = [];
+    while (tempDeck.length) {
+        let rndIdx = Math.floor(Math.random() * tempDeck.length);
+        shuffledDeck.push(tempDeck.splice(rndIdx, 1) [0]);
+    }
+    return tempDeck;
+}
+
+// function renderCardToContainer(deck, container) {
+//     container.innerHTML = '';
+//     let cardsHtml = deck.
+// }
+
+
+
+// function checkImage(faceImg, suitImg) {
+//     return ``;
+// }
 
 function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
+    shuffleDeck();
+    
+    console.log (masterDeck);
     console.log('deal cards!');
 
 }
