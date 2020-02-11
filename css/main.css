@@ -19,6 +19,8 @@ main {
 }
 .cards {
     display: flex;
+    justify-content: center;
+
 }
 #dealer-cards {
     height: 200px;
@@ -69,7 +71,7 @@ main {
 }
 #player-cards {
     height: 200px;
-    width: 1000px;
+    width: 100vw;
     margin-top: -.5rem;
     flex-grow: 2;
     justify-self: flex-start;

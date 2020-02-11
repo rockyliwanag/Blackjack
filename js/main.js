@@ -12,14 +12,15 @@ const PLAYERS = {
         name: 'Player',
         cards: []
     },
-    dealCards: function() {
+    // dealCards: function() {
 
-    }
+    // }
 };
 
-let faces = [ '02', '03', '04', '05', '06', '07', '08', '09', '010', 'J', 'Q', 'K', 'A'];
+let faces = [ '02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
 let suits = ['s', 'c', 'd', 'h'];
 let masterDeck = getDeck();
+
 
 
 /*----- app's state (variables) -----*/
@@ -60,7 +61,7 @@ function getDeck(){
         faces.forEach(function(face){
             deck.push({
                 face: `${suit}${face}`,
-                value: Number(face) || (face === 'A' ? 11 : 10)
+                value: parseInt(face) || (face === 'A' ? 11 : 10)
             });
         });
     });
@@ -78,10 +79,6 @@ function shuffleDeck() {
     return tempDeck;
 }
 
-// function checkImage(faceImg, suitImg) {
-//     return ``;
-// }
-
 function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
     shuffleDeck();
     let deal = function() {
@@ -94,11 +91,10 @@ function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
         }
     };
     deal();
+    dNum();
+    pNum();
     renderCardToContainers(dealerDeck, dlrContainer);
     renderCardToContainers(playerDeck, plyrContainer);
-    console.log(shuffledDeck);
-    console.log (dealerDeck);
-    console.log(playerDeck);
 }
 
 function renderCardToContainers(deck, container) {
@@ -108,6 +104,25 @@ function renderCardToContainers(deck, container) {
     }, '');
     container.innerHTML = cardsHtml;
 }
+
+function dNum () {
+    let dTotal = dealerDeck.reduce((acc, cur) => {
+        acc += cur.value;
+        return acc;
+    }, 0);
+    console.log("dTOTAL ", dTotal);
+    return dTotal;
+}
+
+function pNum () {
+    let pTotal = playerDeck.reduce((acc, cur) => {
+        acc += cur.value;
+        return acc;
+    }, 0);
+    console.log("pTOTAL", pTotal);
+    return pTotal;
+}
+
 
 function nextCard(){ //push card to player hand array
     console.log('hit me!');
