@@ -27,8 +27,8 @@ let masterDeck = getDeck();
 let dealerTotal;
 let playerTotal;
 let shuffledDeck;
-let dealerDeck;
-let playerDeck;
+let dealerDeck = PLAYERS[0].cards;
+let playerDeck = PLAYERS[1].cards;
 //player Total //reduce() to get total value
 //Dealer Total//reduce() to get total value
 //player turn
@@ -52,17 +52,6 @@ stay.addEventListener('click', holdCards);
 /*----- functions -----*/
 
 //deck of cards
-
-
-// class Card {
-//     constructor(value1, value2, img ){
-//         this.value1 = value1;
-//         this.value2 = value2;
-//         this.img = img;
-//     }
-// }
-// let As = new Card('A', 1, 11, 'Spade', 'Images/Spades/spades-Audio.svg');
-
 
 function getDeck(){
     let deck = [];
@@ -101,10 +90,19 @@ function shuffleDeck() {
 
 function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
     shuffleDeck();
-    
-    console.log (masterDeck);
-    console.log('deal cards!');
-
+    let deal = function() {
+        if( PLAYERS[0].cards.length === 0){
+            dealerDeck.push(shuffledDeck.pop());
+            playerDeck.push(shuffledDeck.pop());
+            dealerDeck.push(shuffledDeck.pop());
+            playerDeck.push(shuffledDeck.pop());
+            return;
+        } 
+    };
+    deal();
+    console.log(shuffledDeck);
+    console.log (dealerDeck);
+    console.log(playerDeck);
 }
 
 function nextCard(){ //push card to player hand array
