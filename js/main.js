@@ -7,7 +7,8 @@ const dealSound = new Audio('');
 const PLAYERS = {
     '0' : {
         name: 'Dealer',
-        cards: []
+        cards: [],
+        hiddenCard: []
     },
     '1' : {
         name: 'Player',
@@ -21,11 +22,21 @@ let masterDeck = getDeck();
 
 /*----- app's state (variables) -----*/
 
-// let dealerTotal;
 let shuffledDeck;
+let giveCards = function () {
+    if (PLAYERS[0].cards.length === 0) {
+        playerDeck.push(shuffledDeck.pop());
+        dealerDeck.push(shuffledDeck.pop());
+        playerDeck.push(shuffledDeck.pop());
+        dealerHiddenDeck.push(shuffledDeck.pop());
+
+    }
+};
+
 // let aceCard = dealerDeck[i].
 let dealerDeck = PLAYERS[0].cards;
 let playerDeck = PLAYERS[1].cards;
+let dealerHiddenDeck = PLAYERS[0].hiddenCard;
 
 /*----- cached element references -----*/
 
@@ -46,6 +57,12 @@ hit.addEventListener('click', nextCard);
 stay.addEventListener('click', holdCards);
 
 /*----- functions -----*/
+
+function init () {
+    dealerDeck = [];
+    playerDeck = [];
+    dealerHiddenDeck = [];
+}
 
 function getDeck(){
     let deck = [];
@@ -75,27 +92,18 @@ function dealCards(){
     init();
     if (dealerDeck.length < 2) {
         shuffleDeck();
-        let deal = function() {
-            if( PLAYERS[0].cards.length === 0){
-                playerDeck.push(shuffledDeck.pop());
-                dealerDeck.push(shuffledDeck.pop());
-                playerDeck.push(shuffledDeck.pop());
-            }
-        };
-        deal();
+        giveCards();
         renderTotal();
         renderBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
         renderCardToContainers(playerDeck, plyrContainer);
         checkBlackjack();
+        console.log(dealerHiddenDeck);
         return;
     }
 }
 
-function init () {
-    dealerDeck = [];
-    playerDeck = [];
-}
+
 
 function renderCardToContainers(deck, container) {
     container.innerHTML = '';
@@ -104,6 +112,11 @@ function renderCardToContainers(deck, container) {
     }, '');
     container.innerHTML = cardsHtml;
 }
+
+function hideCard(){
+
+}
+
 function renderBackCard() {
     dealerDeck.push({
         face: 'back-blue',
@@ -112,6 +125,7 @@ function renderBackCard() {
 }
 function removeBackCard() {
     dealerDeck.pop();
+    dealerDeck.push(dealerHiddenDeck.pop());
 }   
     
 function dNum() {
@@ -129,6 +143,23 @@ function pNum() {
     }, 0);
     return pTotal;
 }
+
+function dNumMod() {
+    let dModTotal = dealerDeck.reduce((acc, cur) => {
+        acc += cur.mod;
+        return acc;
+    }, 0);
+    return dModTotal;
+}
+
+function pNumMod() {
+    let pModTotal = playerDeck.reduce((acc, cur) => {
+        acc += cur.mod;
+        return acc;
+    }, 0);
+    return pModTotal;
+}
+
 
 function renderTotal() {
     dlrScore.innerText = dNum();
@@ -170,13 +201,16 @@ function holdCards() {
         removeBackCard();
         dealerDeck.push(shuffledDeck.pop());
         renderTotal();
+        // return;
     }
     // dlrLogic();
     renderCardToContainers(dealerDeck, dlrContainer);
 }
 
 function dlrLogic() {
-    if ( dealerTotal < 17 ){};
+    if ( dealerTotal < 17 ){
+
+    }
 }
 
 function checkBlackjack(){
@@ -184,17 +218,24 @@ function checkBlackjack(){
     blackJack(dealerDeck, dlrStatus);
 }
 
+// let gameOverBtns = function() {
+//     if()
+// };
+
 
 // results functions
 function blackJack(deck, container) {
     let variation1 = (deck[0].value === 10 && deck[1].value === 11);
-    let variation2 = (deck[1].value === 10 && deck[0].value === 11);
+    let variation2 = (deck[0].value === 11 && deck[1].value === 10);
+
     if (variation1 || variation2) { 
         container.innerText = 'BLACKJACK!';
-    } 
-    // else if (deck[0].value === 11 && deck[1].value === 10) {
-    //     container.innerText = 'BLACKJACK!';
-    // }
+        console.log(dealerHiddenDeck);
+    } else
+        if (dealerDeck[0].value === 10 && dealerHiddenDeck.value === 11) {
+            container.innerText = 'BLACKJACK!';
+    }
+
     return;
 } 
 
