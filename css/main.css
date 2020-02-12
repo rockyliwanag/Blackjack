@@ -1,8 +1,9 @@
 body {
-    background-image: url('../Images/blackjack_bg.png');
+    background-image: url('../Images/blackjack-bg.png');
     background-position: center;
     background-size: cover;
     justify-content: center ;
+    background-repeat: no-repeat;
     align-items: center;
     text-align: center;
 }
@@ -22,10 +23,32 @@ main {
     justify-content: center;
 
 }
+#dStatContainer {
+    visibility: visible;
+}
+#dealer-status {
+    
+}
+#pStatContainer {
+    visibility: visible;
+}
+#player-status {
+
+}
+.status {
+    height: 40px;
+    background-color: rgb(19, 19, 19);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: white;
+    display: flex;
+    align-content: center;
+    text-align: center;
+}
 #dealer-cards {
     height: 200px;
     width: 1000px;
     margin: 0 auto;
+    /* margin-bottom: 20px; */
     /* border: 2px solid red; */
 }
 .header-cards {
