@@ -69,24 +69,27 @@ function shuffleDeck() {
 }
 
 function dealCards(){ //shuffle cards and deal 2 to dealer 2 to player
-    shuffleDeck();
-    let deal = function() {
-        if( PLAYERS[0].cards.length === 0){
-            playerDeck.push(shuffledDeck.pop());
-            dealerDeck.push(shuffledDeck.pop());
-            playerDeck.push(shuffledDeck.pop());
-            // dealerDeck.push(renderBackCard()); //facedown card .card.back-red
-            // console.log(renderBackCard());
-        }
-    };
-    deal();
-    dNum();
-    pNum();
-    renderTotal();
-    renderBackCard();
-    renderCardToContainers(dealerDeck, dlrContainer);
-    renderCardToContainers(playerDeck, plyrContainer);
-}
+    if (dealerDeck.length < 2) {
+        shuffleDeck();
+        let deal = function() {
+            if( PLAYERS[0].cards.length === 0){
+                playerDeck.push(shuffledDeck.pop());
+                dealerDeck.push(shuffledDeck.pop());
+                playerDeck.push(shuffledDeck.pop());
+            }
+        };
+        deal();
+        dNum();
+        pNum();
+        renderTotal();
+        renderBackCard();
+        renderCardToContainers(dealerDeck, dlrContainer);
+        renderCardToContainers(playerDeck, plyrContainer);
+        // renderBackCard(dealerDeck, dlrContainer);
+        return;
+} else {
+
+}}
 
 function renderCardToContainers(deck, container) {
     container.innerHTML = '';
@@ -95,12 +98,11 @@ function renderCardToContainers(deck, container) {
     }, '');
     container.innerHTML = cardsHtml;
 }
-let temp
 function renderBackCard() {
-    let backCard = document.createElement('div');
-    backCard.setAttribute('class', 'card back-red');
-    dealerDeck.push(backCard);
-    return temp;
+    let backValue = dealerDeck.push({
+        face: 'back-red',
+        value: 0
+    });
 }   
     
 function dNum() {
@@ -129,10 +131,20 @@ function renderTotal() {
 //     if( PLAYERS[0].cards.);
 // }
 
-function nextCard() { //push card to player hand array
-    
-    console.log('hit me!');
+
+//push card to player hand array, if playerscore is less than or equal to 21 push card to playercontainer, 
+//if greater than 21 gameover
+function nextCard() {
+    let hitCard = function (){ 
+    if (plyrScore.innerText < 21){
+       playerDeck.push(shuffledDeck.pop());
+        }
+        renderCardToContainers(playerDeck, plyrContainer);
+        renderTotal();
+    };
+    hitCard();
 }
+    console.log('hit me!');
 
 function holdCards() {
     console.log('tap, tap');
