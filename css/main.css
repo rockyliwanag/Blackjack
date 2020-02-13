@@ -24,13 +24,13 @@ main {
 
 }
 #dStatContainer {
-    visibility: visible;
+    visibility: hidden;
 }
 #dealer-status {
     
 }
 #pStatContainer {
-    visibility: visible;
+    visibility: hidden;
 }
 #player-status {
 
