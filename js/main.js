@@ -98,7 +98,7 @@ function dealCards(){
         renderCardToContainers(dealerDeck, dlrContainer);
         renderCardToContainers(playerDeck, plyrContainer);
         checkBlackjack();
-        console.log(dealerHiddenDeck);
+
         return;
     }
 }
@@ -199,7 +199,6 @@ function nextCard() {
 function holdCards() {
     if (dealerDeck.length <= 2 ) {
         removeBackCard();
-        dealerDeck.push(shuffledDeck.pop());
         renderTotal();
         // return;
     }
@@ -214,8 +213,8 @@ function dlrLogic() {
 }
 
 function checkBlackjack(){
-    blackJack(playerDeck, plyrStatus);
-    blackJack(dealerDeck, dlrStatus);
+    dblackJack(dealerDeck, dealerHiddenDeck, dlrStatus);
+    pblackJack(playerDeck, plyrStatus);
 }
 
 // let gameOverBtns = function() {
@@ -224,18 +223,30 @@ function checkBlackjack(){
 
 
 // results functions
-function blackJack(deck, container) {
+function pblackJack(deck, container) {
     let variation1 = (deck[0].value === 10 && deck[1].value === 11);
     let variation2 = (deck[0].value === 11 && deck[1].value === 10);
-
     if (variation1 || variation2) { 
+        removeBackCard();
+        renderCardToContainers(dealerDeck, dlrContainer);
+        renderTotal();
         container.innerText = 'BLACKJACK!';
+        console.log('black jack 1!');
         console.log(dealerHiddenDeck);
-    } else
-        if (dealerDeck[0].value === 10 && dealerHiddenDeck.value === 11) {
-            container.innerText = 'BLACKJACK!';
-    }
-
+    } 
+    return;
+} 
+function dblackJack(deck, deck2, container) {
+    let variation3 = (deck[0].value === 10 && deck2[0].value === 11);
+    let variation4 = (deck[0].value === 11 && deck2[0].value === 10);
+    if (variation3 || variation4) { 
+        removeBackCard();
+        renderCardToContainers(dealerDeck, dlrContainer);
+        renderTotal();
+        container.innerText = 'BLACKJACK!';
+        console.log('black jack 2!');
+        console.log(dealerHiddenDeck);
+    } 
     return;
 } 
 
