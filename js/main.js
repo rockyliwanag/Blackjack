@@ -58,6 +58,11 @@ function init () {
     dealerHiddenDeck = [];
     dlrStatContain.style.visibility = 'hidden';
     plyrStatContain.style.visibility = 'hidden';
+<<<<<<< HEAD
+=======
+    hit.addEventListener('click', nextCard);
+    stay.addEventListener('click', holdCards);
+>>>>>>> master
 }
 
 function getDeck(){
@@ -93,7 +98,12 @@ function startGame(){
         renderBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
         renderCardToContainers(playerDeck, plyrContainer);
+<<<<<<< HEAD
         checkWinner();
+=======
+        dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
+        plyrBlkJack(playerDeck, plyrStatus);
+>>>>>>> master
         return;
     }
 }
@@ -125,7 +135,16 @@ function renderBackCard() {
 function removeBackCard() {
     dealerDeck.pop();
     dealerDeck.push(dealerHiddenDeck.pop());
+<<<<<<< HEAD
 }   
+=======
+}
+
+function removeButtons() {
+    hit.removeEventListener('click', nextCard);
+    stay.removeEventListener('click', holdCards);
+}
+>>>>>>> master
     
 function reducedValue(deck){
     let total = deck.reduce((acc, cur) => {
@@ -142,6 +161,7 @@ function reducedModValue(deck){
     }, 0);
     return modTotal;
 }
+<<<<<<< HEAD
 function checkForAce(deck) {
     let face = "A";
     deck.includes(face);
@@ -164,10 +184,44 @@ function nextCard() {
 }
 
 function hitCard(score, deck, container, status, message) {
+=======
+
+function checkForAce(deck) {
+    let face = "A";
+    deck.includes(face);
+}
+
+function concatScore(score1, score2){
+    let target = score1.innerText;
+    let source = score2.innerText;
+    dlrModScore = target + "/" + source;
+    return concatScore;
+}
+
+function renderTotal() {
+    // if( check for ace){true: render mod total | false: render regular total}
+   
+    dlrScore.innerText = reducedValue(dealerDeck);
+    plyrScore.innerText = reducedValue(playerDeck);
+    // dlrModScore.innerText = reducedModValue(dealerDeck);
+    // plyrModScore.innerText = reducedModValue(playerDeck);
+
+    // dlrScore.innerText = dNum() ? "something" : "something else"
+}
+
+function nextCard() {
+    hitCard(plyrScore, playerDeck, plyrContainer, plyrStatus, plyrStatContain);
+    checkBust();
+    return;
+}
+
+function hitCard(score, deck, container) {
+>>>>>>> master
     if (score.innerText < 21) {
         deck.push(shuffledDeck.pop());
         renderCardToContainers(deck, container);
         renderTotal();
+<<<<<<< HEAD
         checkWinner();
         return;
     }
@@ -178,22 +232,39 @@ function concatScore(score1, score2){
     let source = score2.innerText;
     dlrModScore = target + "/" + source;
     return concatScore;
+=======
+        return;
+    }
+>>>>>>> master
 }
+
  
 // need a function to modify Ace card
     //need to give 2 totals one with value of 11+ and one with 1+ and concat 11+total with 1+total 11/1
 // let aceCard = 
+<<<<<<< HEAD
     //function that initializes dealer logic.
+=======
+>>>>>>> master
 
 function holdCards() {
-    if (dealerDeck.length <= 2 ) {
+    if (dealerDeck.length === 2 ) {
         removeBackCard();
         renderTotal();
         dealerLogic();
+<<<<<<< HEAD
+=======
+        checkBust();
+        twentyOne(playerDeck, plyrScore, plyrStatus, plyrStatContain);
+        twentyOne(dealerDeck, dlrScore, dlrStatus, dlrStatContain);
+        // aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+        whosHigher(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+>>>>>>> master
     }
     renderCardToContainers(dealerDeck, dlrContainer);
 }
 
+<<<<<<< HEAD
 function checkWinner(){
     dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
     plyrBlkJack(playerDeck, plyrStatus);
@@ -247,6 +318,43 @@ function dealerCheckCard() {
 }
 
 
+=======
+function dealerLogic() {
+    dealerCheckCard();
+    dealerCheckCard();
+    dealerCheckCard();
+    aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+}
+
+function dealerCheckCard() {
+    if (dlrScore.innerText < 17) {
+        hitCard(dlrScore, dealerDeck, dlrContainer, dlrStatus, dlrStatContain);
+    } else {
+        return;
+    }
+}
+
+function checkBust(){
+    bust(plyrScore, plyrStatContain, plyrStatus);
+    bust(dlrScore, dlrStatContain, dlrStatus);
+}
+
+function bust(score,container,message) {
+    if(score.innerText > 21) {
+        message.innerText = 'BUST!';
+        container.style.visibility = 'visible';
+        removeButtons();
+    }
+}
+
+function twentyOne(deck, score, message, container) {
+    if (deck.length > 2 && score.innerText === '21') {
+        message.innerText = 'TWENTY ONE!';
+        container.style.visibility = 'visible';
+        removeButtons();
+    }
+}
+>>>>>>> master
 
 function plyrBlkJack(deck, container) {
     let variation1 = (deck[0].value === 10 && deck[1].value === 11);
@@ -257,19 +365,62 @@ function plyrBlkJack(deck, container) {
         renderTotal();
         container.innerText = 'BLACKJACK!';
         plyrStatContain.style.visibility = 'visible';
+<<<<<<< HEAD
+=======
+        removeButtons();
+>>>>>>> master
     } 
     return;
 }
 
+<<<<<<< HEAD
 function dlrBlkJack(deck, deck2, container) {
+=======
+function dlrBlkJack(deck, deck2, message) {
+>>>>>>> master
     let variation3 = (deck[0].value === 10 && deck2[0].value === 11);
     let variation4 = (deck[0].value === 11 && deck2[0].value === 10);
     if (variation3 || variation4) { 
         removeBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
         renderTotal();
+<<<<<<< HEAD
         container.innerText = 'BLACKJACK!';
         dlrStatContain.style.visibility = 'visible';
     } 
     return;
+=======
+        message.innerText = 'BLACKJACK!';
+        dlrStatContain.style.visibility = 'visible';
+        removeButtons();
+    } 
+    return;
+}
+
+function whosHigher(score1, score2, message1, message2, container1, container2) {
+    let scoreA = score1.innerText;
+    let scoreB = score2.innerText;
+    if (scoreA < 21 && scoreB < 21 && scoreA > scoreB) {
+        message1.innerText = 'WINNER!';
+        container1.style.visibility = 'visible';
+        removeButtons();
+    } else if (scoreB < 21 && scoreB < 21 && scoreB > scoreA){
+        message2.innerText = 'WINNER!';
+        container2.style.visibility = 'visible';
+        removeButtons();
+    }
+    
+}
+
+function aPush(score1, score2, message1, message2, container1, container2){
+    let scoreA = score1.innerText;
+    let scoreB = score2.innerText;
+    if (scoreA <= 21 && scoreB <= 21 && scoreA === scoreB) {
+        message1.innerText = 'PUSH';
+        container1.style.visibility = 'visible';
+        message2.innerText = 'PUSH';
+        container2.style.visibility = 'visible';
+        removeButtons();
+    }
+>>>>>>> master
 }

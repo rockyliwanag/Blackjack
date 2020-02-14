@@ -26,16 +26,26 @@ main {
 
 }
 #dStatContainer {
+<<<<<<< HEAD
+=======
+    display: flex;
+>>>>>>> master
     visibility: hidden;
 }
 #dealer-status {
-    
+    align-self: center;
+    text-align: center;
 }
 #pStatContainer {
+<<<<<<< HEAD
+=======
+    display: flex;
+>>>>>>> master
     visibility: hidden;
 }
 #player-status {
-
+    align-self: center;
+    text-align: center;
 }
 .status {
     height: 40px;
