@@ -26,7 +26,6 @@ let shuffledDeck;
 let dealerDeck = PLAYERS[0].cards;
 let playerDeck = PLAYERS[1].cards;
 let dealerHiddenDeck = PLAYERS[0].hiddenCard;
-let totalDealerDeck = PLAYERS[0].cards.concat(PLAYERS[0].hiddenCard); //might not need this
 
 /*----- cached element references -----*/
 
@@ -35,8 +34,8 @@ const hit = document.getElementById('hit-button');
 const stay = document.getElementById('stay-button');
 const dlrScore = document.getElementById('dealer-score');
 const plyrScore = document.getElementById('player-score');
-const dlrModScore = document.getElementById('dealer-score');
-const plyrModScore = document.getElementById('player-score');
+let dlrModScore = document.getElementById('dealer-score');
+let plyrModScore = document.getElementById('player-score');
 const dlrContainer = document.getElementById('dealer-cards');
 const plyrContainer = document.getElementById('player-cards');
 const dlrStatus = document.getElementById('dealer-status');
@@ -91,12 +90,12 @@ function startGame(){
     if (dealerDeck.length < 2) {
         shuffleDeck();
         giveCards();
-        renderTotal();
         renderBackCard();
-        renderCardToContainers(dealerDeck, dlrContainer);
-        renderCardToContainers(playerDeck, plyrContainer);
+        renderCards();
         dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
         plyrBlkJack(playerDeck, plyrStatus);
+        renderTotal(playerDeck, plyrScore);
+        dlrScore.innerText = reducedValue(dealerDeck);
         return;
     }
 }
@@ -109,6 +108,11 @@ let giveCards = function () {
         dealerHiddenDeck.push(shuffledDeck.pop());
     }
 };
+
+function renderCards() {
+    renderCardToContainers(dealerDeck, dlrContainer);
+    renderCardToContainers(playerDeck, plyrContainer);
+}
 
 function renderCardToContainers(deck, container) {
     container.innerHTML = '';
@@ -152,92 +156,114 @@ function reducedModValue(deck){
 }
 
 function checkForAce(deck) {
-    let face = "A";
-    deck.includes(face);
+    let ace = false;
+    deck.forEach(function (player) {
+       if ( player.mod === 1 ) {
+           ace = true;
+       }
+    });
+    return ace;
 }
 
-function concatScore(score1, score2){
-    let target = score1.innerText;
-    let source = score2.innerText;
-    dlrModScore = target + "/" + source;
-    return concatScore;
+function modifiedScore() {
+    concatScore(dealerDeck);
+    concatScore(playerDeck);
 }
 
-function renderTotal() {
-    // if( check for ace){true: render mod total | false: render regular total}
-   
-    dlrScore.innerText = reducedValue(dealerDeck);
-    plyrScore.innerText = reducedValue(playerDeck);
-    // dlrModScore.innerText = reducedModValue(dealerDeck);
-    // plyrModScore.innerText = reducedModValue(playerDeck);
-
-    // dlrScore.innerText = dNum() ? "something" : "something else"
+function concatScore(deck){
+    let target = reducedValue(deck);
+    let source = reducedModValue(deck);
+    modScore = source + "/" + target;
+    return modScore;
 }
 
-function nextCard() {
-    hitCard(plyrScore, playerDeck, plyrContainer, plyrStatus, plyrStatContain);
-    checkBust();
-    return;
-}
-
-function hitCard(score, deck, container) {
-    if (score.innerText < 21) {
-        deck.push(shuffledDeck.pop());
-        renderCardToContainers(deck, container);
-        renderTotal();
-        return;
+function renderTotal(deck, container) {
+    if ( checkForAce(deck) === true ) {
+        container.innerText = concatScore(deck);
+    }
+    else {
+        container.innerText = reducedValue(deck);
     }
 }
 
- 
-// need a function to modify Ace card
-    //need to give 2 totals one with value of 11+ and one with 1+ and concat 11+total with 1+total 11/1
-// let aceCard = 
+function nextCard() {  
+    checkForAce(playerDeck);
+    hitCard(playerDeck, plyrContainer);
+    renderTotal(playerDeck,plyrScore);
+    bustMove();
+}
+
+function hitCard(deck, container) {
+    deck.push(shuffledDeck.pop());
+    renderCardToContainers(deck, container);
+    return;
+}
 
 function holdCards() {
     if (dealerDeck.length === 2 ) {
         removeBackCard();
-        renderTotal();
+        renderCardToContainers(dealerDeck, dlrContainer);
+        renderTotal(dealerDeck, dlrScore);
         dealerLogic();
-        checkBust();
-        twentyOne(playerDeck, plyrScore, plyrStatus, plyrStatContain);
-        twentyOne(dealerDeck, dlrScore, dlrStatus, dlrStatContain);
-        // aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
-        whosHigher(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+        bustMove();
+        aPush(dealerDeck, playerDeck, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+        twentyOneCheck();
+        whosHigher(dealerDeck, playerDeck, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+        hit.removeEventListener('click', nextCard);
     }
-    renderCardToContainers(dealerDeck, dlrContainer);
 }
 
 function dealerLogic() {
-    dealerCheckCard();
-    dealerCheckCard();
-    dealerCheckCard();
-    aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+    aces();
+    aces();
 }
 
-function dealerCheckCard() {
-    if (dlrScore.innerText < 17) {
-        hitCard(dlrScore, dealerDeck, dlrContainer, dlrStatus, dlrStatContain);
-    } else {
+function aces() {
+    if(checkForAce(dealerDeck) === true && reducedValue(dealerDeck) <= 16 && reducedModValue(dealerDeck) <= 6) {
+        hitCard(dealerDeck, dlrContainer);
+        renderTotal(dealerDeck, dlrScore);
+        if(reducedValue(dealerDeck) > 21 || reducedModValue(dealerDeck) <= 16) {
+            hitCard(dealerDeck, dlrContainer);
+    }   else {
         return;
+    }
+    } else if (reducedValue(dealerDeck) < 17){
+        hitCard(dealerDeck, dlrContainer);
+        renderTotal(dealerDeck, dlrScore);
     }
 }
 
-function checkBust(){
-    bust(plyrScore, plyrStatContain, plyrStatus);
-    bust(dlrScore, dlrStatContain, dlrStatus);
+function bustMove() {
+    checkBust(dealerDeck, dlrStatContain, dlrStatus);
+    checkBust(playerDeck, plyrStatContain, plyrStatus);
 }
 
-function bust(score,container,message) {
-    if(score.innerText > 21) {
+function checkBust(deck, container, message){
+    if(checkForAce(deck) !== true && reducedValue(deck) > 21){
+        bust(container, message);
+    }
+    else if (checkForAce(deck) === true && reducedModValue(deck) > 21){
+        bust(container, message);
+    } else if (checkForAce(deck) === true && reducedValue(deck) > 21){
+        return;
+    } else {
+        return;
+    }     
+}
+
+function bust(container,message) {
         message.innerText = 'BUST!';
         container.style.visibility = 'visible';
         removeButtons();
-    }
 }
 
-function twentyOne(deck, score, message, container) {
-    if (deck.length > 2 && score.innerText === '21') {
+function twentyOneCheck(){
+    twentyOne(playerDeck, plyrStatus, plyrStatContain);
+    twentyOne(dealerDeck, dlrStatus, dlrStatContain);
+}
+
+function twentyOne(deck, message, container) {
+    if (deck.length > 2 && reducedValue(deck) === 21 || reducedModValue(deck) === 21) {
         message.innerText = 'TWENTY ONE!';
         container.style.visibility = 'visible';
         removeButtons();
@@ -250,7 +276,8 @@ function plyrBlkJack(deck, container) {
     if (variation1 || variation2) { 
         removeBackCard();
         renderCardToContainers(playerDeck, plyrContainer);
-        renderTotal();
+        dlrScore.innerText = reducedValue(dealerDeck);
+        plyrScore.innerText = reducedValue(playerDeck);
         container.innerText = 'BLACKJACK!';
         plyrStatContain.style.visibility = 'visible';
         removeButtons();
@@ -264,7 +291,8 @@ function dlrBlkJack(deck, deck2, message) {
     if (variation3 || variation4) { 
         removeBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
-        renderTotal();
+        dlrScore.innerText = reducedValue(dealerDeck);
+        plyrScore.innerText = reducedValue(playerDeck);
         message.innerText = 'BLACKJACK!';
         dlrStatContain.style.visibility = 'visible';
         removeButtons();
@@ -272,24 +300,35 @@ function dlrBlkJack(deck, deck2, message) {
     return;
 }
 
-function whosHigher(score1, score2, message1, message2, container1, container2) {
-    let scoreA = score1.innerText;
-    let scoreB = score2.innerText;
-    if (scoreA < 21 && scoreB < 21 && scoreA > scoreB) {
+function whosHigher(deck1, deck2, message1, message2, container1, container2) {
+    let scoreA = reducedValue(deck1);
+    let scoreB = reducedValue(deck2);
+    let scoreC = reducedModValue(deck1);
+    let scoreD = reducedModValue(deck2);
+    if (checkForAce(deck1) === true) {
+        if(scoreA < 21 && scoreD < 21 && scoreA > scoreD ){
+            message1.innerText = 'WINNER!';
+            container1.style.visibility = 'visible';
+            removeButtons();
+        } else if (scoreB < 21 && scoreC < 21 && scoreB > scoreC) {
+            message2.innerText = 'WINNER!';
+            container2.style.visibility = 'visible';
+            removeButtons();
+        }
+    } else if (scoreA < 21 && scoreB < 21 && scoreA > scoreB) {
         message1.innerText = 'WINNER!';
         container1.style.visibility = 'visible';
         removeButtons();
-    } else if (scoreB < 21 && scoreB < 21 && scoreB > scoreA){
+    } else if (scoreB < 21 && scoreA < 21 && scoreB > scoreA){
         message2.innerText = 'WINNER!';
         container2.style.visibility = 'visible';
         removeButtons();
     }
-    
 }
 
-function aPush(score1, score2, message1, message2, container1, container2){
-    let scoreA = score1.innerText;
-    let scoreB = score2.innerText;
+function aPush(deck1, deck2, message1, message2, container1, container2,){
+    let scoreA = reducedValue(deck1);
+    let scoreB = reducedValue(deck2);
     if (scoreA <= 21 && scoreB <= 21 && scoreA === scoreB) {
         message1.innerText = 'PUSH';
         container1.style.visibility = 'visible';
