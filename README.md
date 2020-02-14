@@ -35,7 +35,7 @@ Blackjack as simple as it is when played, has a lot of variables that can make d
 <li> Click the Stay button if you are happy with your cards and let the dealer make its moves. Good Luck!
 </ul>
 
-Try it out here: [LAUNCH GAME](https://rockyliwanag.github.io/Blackjack/)
+Try it out here:  <a href="https://rockyliwanag.github.io/Blackjack/">LAUNCH GAME</a>
 
 
 ## Icebox
