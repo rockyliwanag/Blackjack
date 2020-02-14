@@ -26,22 +26,18 @@ main {
 
 }
 #dStatContainer {
-<<<<<<< HEAD
-=======
     display: flex;
->>>>>>> master
     visibility: hidden;
+    align-content: center;
 }
 #dealer-status {
     align-self: center;
     text-align: center;
 }
 #pStatContainer {
-<<<<<<< HEAD
-=======
     display: flex;
->>>>>>> master
     visibility: hidden;
+    align-content: center;
 }
 #player-status {
     align-self: center;
@@ -60,14 +56,11 @@ main {
     height: 200px;
     width: 1000px;
     margin: 0 auto;
-    /* margin-bottom: 20px; */
-    /* border: 2px solid red; */
 }
 .header-cards {
     color: white;
     text-decoration: underline;
     text-align: center;
-    /* border: 2px solid white; */
     margin: 0;
 }
 #header-div {
@@ -78,7 +71,6 @@ main {
     justify-content: space-evenly;
     flex-direction: row;
     height: 300px;
-    /* border: 2px solid blue; */
     margin-top: .2rem;
 }
 #dealer-container {
@@ -110,8 +102,8 @@ main {
     margin-top: -.5rem;
     flex-grow: 2;
     justify-self: flex-start;
-    /* border: 2px solid red; */
 }
+
 #button-container {
     display: flex;
     flex-direction: column;
@@ -123,7 +115,6 @@ main {
     justify-self: flex-start;
     margin: 0rem 1rem;
     flex-grow: 0;
-    /* border: 2px solid blue; */
 }
 
 .buttons {
@@ -137,11 +128,3 @@ img {
     width: 100%;
     height: auto;
 }
-#footer-div {
-    /* margin-top: -3rem; */
-}
-
-/* #reset-button {
-    background: url('/images/deal-button.png');
-} */
-
