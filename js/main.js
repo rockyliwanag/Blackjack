@@ -91,10 +91,6 @@ function startGame(){
         shuffleDeck();
         giveCards();
         renderBackCard();
-        renderCardToContainers(dealerDeck, dlrContainer);
-        renderCardToContainers(playerDeck, plyrContainer);
-        dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
-        plyrBlkJack(playerDeck, plyrStatus);
         renderCards();
         dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
         plyrBlkJack(playerDeck, plyrStatus);
@@ -136,14 +132,12 @@ function renderBackCard() {
 function removeBackCard() {
     dealerDeck.pop();
     dealerDeck.push(dealerHiddenDeck.pop());
-
 }
 
 function removeButtons() {
     hit.removeEventListener('click', nextCard);
     stay.removeEventListener('click', holdCards);
 }
-
     
 function reducedValue(deck){
     let total = deck.reduce((acc, cur) => {
@@ -192,15 +186,6 @@ function renderTotal(deck, container) {
     }
 }
 
-function hitCard(score, deck, container) {
-    if (score.innerText < 21) {
-        deck.push(shuffledDeck.pop());
-        renderCardToContainers(deck, container);
-        renderTotal();
-        return;
-    }
-}
-
 function nextCard() {  
     checkForAce(playerDeck);
     hitCard(playerDeck, plyrContainer);
@@ -220,19 +205,11 @@ function holdCards() {
         renderCardToContainers(dealerDeck, dlrContainer);
         renderTotal(dealerDeck, dlrScore);
         dealerLogic();
-
-        checkBust();
-        twentyOne(playerDeck, plyrScore, plyrStatus, plyrStatContain);
-        twentyOne(dealerDeck, dlrScore, dlrStatus, dlrStatContain);
-
-        whosHigher(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
-
         bustMove();
         aPush(dealerDeck, playerDeck, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
         twentyOneCheck();
         whosHigher(dealerDeck, playerDeck, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
         hit.removeEventListener('click', nextCard);
->>>>>>> master
     }
 }
 
@@ -314,7 +291,6 @@ function dlrBlkJack(deck, deck2, message) {
     if (variation3 || variation4) { 
         removeBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
-        renderTotal();
         dlrScore.innerText = reducedValue(dealerDeck);
         plyrScore.innerText = reducedValue(playerDeck);
         message.innerText = 'BLACKJACK!';
