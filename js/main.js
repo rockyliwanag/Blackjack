@@ -1,9 +1,4 @@
 /*----- constants -----*/
-
-const ambience = new Audio('');
-const shuffSound = new Audio('');
-const dealSound = new Audio('');
-
 const PLAYERS = {
     '0' : {
         name: 'Dealer',
