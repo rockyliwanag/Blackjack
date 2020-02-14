@@ -7,7 +7,8 @@ const dealSound = new Audio('');
 const PLAYERS = {
     '0' : {
         name: 'Dealer',
-        cards: []
+        cards: [],
+        hiddenCard: []
     },
     '1' : {
         name: 'Player',
@@ -21,11 +22,11 @@ let masterDeck = getDeck();
 
 /*----- app's state (variables) -----*/
 
-// let dealerTotal;
 let shuffledDeck;
-// let aceCard = dealerDeck[i].
 let dealerDeck = PLAYERS[0].cards;
 let playerDeck = PLAYERS[1].cards;
+let dealerHiddenDeck = PLAYERS[0].hiddenCard;
+let totalDealerDeck = PLAYERS[0].cards.concat(PLAYERS[0].hiddenCard); //might not need this
 
 /*----- cached element references -----*/
 
@@ -34,18 +35,32 @@ const hit = document.getElementById('hit-button');
 const stay = document.getElementById('stay-button');
 const dlrScore = document.getElementById('dealer-score');
 const plyrScore = document.getElementById('player-score');
+const dlrModScore = document.getElementById('dealer-score');
+const plyrModScore = document.getElementById('player-score');
 const dlrContainer = document.getElementById('dealer-cards');
 const plyrContainer = document.getElementById('player-cards');
 const dlrStatus = document.getElementById('dealer-status');
 const plyrStatus = document.getElementById('player-status');
+const dlrStatContain = document.getElementById('dStatContainer');
+const plyrStatContain = document.getElementById('pStatContainer');
 
 /*----- event listeners -----*/
 
-deal.addEventListener('click', dealCards);
+deal.addEventListener('click', startGame);
 hit.addEventListener('click', nextCard);
 stay.addEventListener('click', holdCards);
 
 /*----- functions -----*/
+
+function init () {
+    dealerDeck = [];
+    playerDeck = [];
+    dealerHiddenDeck = [];
+    dlrStatContain.style.visibility = 'hidden';
+    plyrStatContain.style.visibility = 'hidden';
+    hit.addEventListener('click', nextCard);
+    stay.addEventListener('click', holdCards);
+}
 
 function getDeck(){
     let deck = [];
@@ -54,7 +69,7 @@ function getDeck(){
             deck.push({
                 face: `${suit}${face}`,
                 value: parseInt(face) || (face === 'A' ? 11 : 10),
-                mod: 0 || (face === 'A' ? 1 : 0)
+                mod: parseInt(face) || (face === 'A' ? 1 : 10)
             });
         });
     });
@@ -71,31 +86,29 @@ function shuffleDeck() {
     return tempDeck;
 }
 
-function dealCards(){
+function startGame(){
     init();
     if (dealerDeck.length < 2) {
         shuffleDeck();
-        let deal = function() {
-            if( PLAYERS[0].cards.length === 0){
-                playerDeck.push(shuffledDeck.pop());
-                dealerDeck.push(shuffledDeck.pop());
-                playerDeck.push(shuffledDeck.pop());
-            }
-        };
-        deal();
+        giveCards();
         renderTotal();
         renderBackCard();
         renderCardToContainers(dealerDeck, dlrContainer);
         renderCardToContainers(playerDeck, plyrContainer);
-        checkBlackjack();
+        dlrBlkJack(dealerDeck, dealerHiddenDeck, dlrStatus);
+        plyrBlkJack(playerDeck, plyrStatus);
         return;
     }
 }
 
-function init () {
-    dealerDeck = [];
-    playerDeck = [];
-}
+let giveCards = function () {
+    if (PLAYERS[0].cards.length === 0) {
+        playerDeck.push(shuffledDeck.pop());
+        dealerDeck.push(shuffledDeck.pop());
+        playerDeck.push(shuffledDeck.pop());
+        dealerHiddenDeck.push(shuffledDeck.pop());
+    }
+};
 
 function renderCardToContainers(deck, container) {
     container.innerHTML = '';
@@ -104,119 +117,184 @@ function renderCardToContainers(deck, container) {
     }, '');
     container.innerHTML = cardsHtml;
 }
+
 function renderBackCard() {
     dealerDeck.push({
         face: 'back-blue',
         value: 0
     });
 }
+
 function removeBackCard() {
     dealerDeck.pop();
-}   
-    
-function dNum() {
-    let dTotal = dealerDeck.reduce((acc, cur) => {
-        acc += cur.value;
-        return acc;
-    }, 0);
-    return dTotal;
+    dealerDeck.push(dealerHiddenDeck.pop());
 }
 
-function pNum() {
-    let pTotal = playerDeck.reduce((acc, cur) => {
+function removeButtons() {
+    hit.removeEventListener('click', nextCard);
+    stay.removeEventListener('click', holdCards);
+}
+    
+function reducedValue(deck){
+    let total = deck.reduce((acc, cur) => {
         acc += cur.value;
         return acc;
     }, 0);
-    return pTotal;
+    return total;
+}
+
+function reducedModValue(deck){
+    let modTotal = deck.reduce((acc, cur) => {
+        acc += cur.mod;
+        return acc;
+    }, 0);
+    return modTotal;
+}
+
+function checkForAce(deck) {
+    let face = "A";
+    deck.includes(face);
+}
+
+function concatScore(score1, score2){
+    let target = score1.innerText;
+    let source = score2.innerText;
+    dlrModScore = target + "/" + source;
+    return concatScore;
 }
 
 function renderTotal() {
-    dlrScore.innerText = dNum();
-    plyrScore.innerText = pNum();
+    // if( check for ace){true: render mod total | false: render regular total}
+   
+    dlrScore.innerText = reducedValue(dealerDeck);
+    plyrScore.innerText = reducedValue(playerDeck);
+    // dlrModScore.innerText = reducedModValue(dealerDeck);
+    // plyrModScore.innerText = reducedModValue(playerDeck);
+
+    // dlrScore.innerText = dNum() ? "something" : "something else"
 }
 
-//need function that takes dNum and pNum as arguments and see if it is a total of 21 - player with 21 wins.
-
-
-
-//push card to player hand array, if playerscore is less than or equal to 21 push card to playercontainer, 
-//if greater than 21 gameover
 function nextCard() {
-    let hitCard = function (){ 
-    if (plyrScore.innerText < 21){
-       playerDeck.push(shuffledDeck.pop());
-    } else {
-            console.log('Player Bust!');
-        }
-        renderCardToContainers(playerDeck, plyrContainer);
-        renderTotal();
-    };
-    hitCard();
+    hitCard(plyrScore, playerDeck, plyrContainer, plyrStatus, plyrStatContain);
+    checkBust();
+    return;
 }
+
+function hitCard(score, deck, container) {
+    if (score.innerText < 21) {
+        deck.push(shuffledDeck.pop());
+        renderCardToContainers(deck, container);
+        renderTotal();
+        return;
+    }
+}
+
  
 // need a function to modify Ace card
     //need to give 2 totals one with value of 11+ and one with 1+ and concat 11+total with 1+total 11/1
-
 // let aceCard = 
-    
-    //function to pop back-card img and push a new card from shuffled deck 
-    //function that initializes dealer logic.
-// function rmBackImg() { 
-//     dealerDeck.pop();
-//  }
 
 function holdCards() {
-    if (dealerDeck.length <= 2 ) {
+    if (dealerDeck.length === 2 ) {
         removeBackCard();
-        dealerDeck.push(shuffledDeck.pop());
         renderTotal();
+        dealerLogic();
+        checkBust();
+        twentyOne(playerDeck, plyrScore, plyrStatus, plyrStatContain);
+        twentyOne(dealerDeck, dlrScore, dlrStatus, dlrStatContain);
+        // aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
+        whosHigher(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
     }
-    // dlrLogic();
     renderCardToContainers(dealerDeck, dlrContainer);
 }
 
-function dlrLogic() {
-    if ( dealerTotal < 17 ){};
+function dealerLogic() {
+    dealerCheckCard();
+    dealerCheckCard();
+    dealerCheckCard();
+    aPush(dlrScore, plyrScore, dlrStatus, plyrStatus, dlrStatContain, plyrStatContain);
 }
 
-function checkBlackjack(){
-    blackJack(playerDeck, plyrStatus);
-    blackJack(dealerDeck, dlrStatus);
+function dealerCheckCard() {
+    if (dlrScore.innerText < 17) {
+        hitCard(dlrScore, dealerDeck, dlrContainer, dlrStatus, dlrStatContain);
+    } else {
+        return;
+    }
 }
 
+function checkBust(){
+    bust(plyrScore, plyrStatContain, plyrStatus);
+    bust(dlrScore, dlrStatContain, dlrStatus);
+}
 
-// results functions
-function blackJack(deck, container) {
+function bust(score,container,message) {
+    if(score.innerText > 21) {
+        message.innerText = 'BUST!';
+        container.style.visibility = 'visible';
+        removeButtons();
+    }
+}
+
+function twentyOne(deck, score, message, container) {
+    if (deck.length > 2 && score.innerText === '21') {
+        message.innerText = 'TWENTY ONE!';
+        container.style.visibility = 'visible';
+        removeButtons();
+    }
+}
+
+function plyrBlkJack(deck, container) {
     let variation1 = (deck[0].value === 10 && deck[1].value === 11);
-    let variation2 = (deck[1].value === 10 && deck[0].value === 11);
+    let variation2 = (deck[0].value === 11 && deck[1].value === 10);
     if (variation1 || variation2) { 
+        removeBackCard();
+        renderCardToContainers(playerDeck, plyrContainer);
+        renderTotal();
         container.innerText = 'BLACKJACK!';
+        plyrStatContain.style.visibility = 'visible';
+        removeButtons();
     } 
-    // else if (deck[0].value === 11 && deck[1].value === 10) {
-    //     container.innerText = 'BLACKJACK!';
-    // }
     return;
-} 
-
-function push(){
-
 }
 
+function dlrBlkJack(deck, deck2, message) {
+    let variation3 = (deck[0].value === 10 && deck2[0].value === 11);
+    let variation4 = (deck[0].value === 11 && deck2[0].value === 10);
+    if (variation3 || variation4) { 
+        removeBackCard();
+        renderCardToContainers(dealerDeck, dlrContainer);
+        renderTotal();
+        message.innerText = 'BLACKJACK!';
+        dlrStatContain.style.visibility = 'visible';
+        removeButtons();
+    } 
+    return;
+}
 
+function whosHigher(score1, score2, message1, message2, container1, container2) {
+    let scoreA = score1.innerText;
+    let scoreB = score2.innerText;
+    if (scoreA < 21 && scoreB < 21 && scoreA > scoreB) {
+        message1.innerText = 'WINNER!';
+        container1.style.visibility = 'visible';
+        removeButtons();
+    } else if (scoreB < 21 && scoreB < 21 && scoreB > scoreA){
+        message2.innerText = 'WINNER!';
+        container2.style.visibility = 'visible';
+        removeButtons();
+    }
+    
+}
 
-//Dealer move logic
-    //-if sum of cards are less than 17 dealer hits
-    //-if sum of cards are greater than or equal to 17 dealer 
-    //  stays
-    //-if sum of cards are greater than 21 dealer busts
-
-//Win logic
-    //-if player sum of cards is greater than 21 player busts, 
-    //  dealer wins
-    //-if dealer sum of cards is greater than 21 and player is 
-    //  less than 21, player wins
-    //- DONE - if player sum of cards is greater than 21 and dealer is -
-    //  - less than 21, dealer wins - DONE
-    //-if player and dealer is less than 21 and hold cards, 
-    //  whoever is closest to 21 wins
-
+function aPush(score1, score2, message1, message2, container1, container2){
+    let scoreA = score1.innerText;
+    let scoreB = score2.innerText;
+    if (scoreA <= 21 && scoreB <= 21 && scoreA === scoreB) {
+        message1.innerText = 'PUSH';
+        container1.style.visibility = 'visible';
+        message2.innerText = 'PUSH';
+        container2.style.visibility = 'visible';
+        removeButtons();
+    }
+}
